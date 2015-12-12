@@ -62,6 +62,7 @@ private:
     NetworkService *mNetworkToConnect;
     UserAgent mAgent;
     QString mNetworkPassword;
+    QString mNetworkUsername;
 
     void connectWifiSignals();
     void finishConnectionProcess(bool success, const QString &error);

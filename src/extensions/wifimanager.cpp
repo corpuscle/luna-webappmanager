@@ -144,6 +144,14 @@ void WiFiManager::handleUserInputRequested(const QString &servicePath, const QVa
 
     QVariantMap replyFields;
 
+    if (fields.contains("Identity")) {
+        replyFields.insert("Identity", QVariant(mNetworkUsername)); // Intentional.
+    }
+
+    if (fields.contains("Username")) {
+        replyFields.insert("Username", QVariant(mNetworkUsername));
+    }
+
     if (fields.contains("Passphrase")) {
         replyFields.insert("Passphrase", QVariant(mNetworkPassword));
     }
@@ -215,6 +223,7 @@ void WiFiManager::finishConnectionProcess(bool success, const QString &error)
 
 void WiFiManager::connectNetwork(int callId, const QString &network)
 {
+    // Be aware that network may contain plain text credentials.
     qDebug() << __PRETTY_FUNCTION__ << network;
 
     if (mConnecting) {
@@ -245,6 +254,13 @@ void WiFiManager::connectNetwork(int callId, const QString &network)
     }
 
     mNetworkPassword = root.value("password").toString();
+
+    if (root.contains("username") && root.value("username").isString()) {
+	mNetworkUsername = root.value("username").toString();
+    }
+    else {
+	mNetworkUsername = "";
+    }
 
     QVariantMap emptyProperties;
     mNetworkToConnect = new NetworkService(path, emptyProperties, 0);
